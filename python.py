@@ -3,14 +3,6 @@ from subprocess import Popen, PIPE
 import os
 import sys
 
-baseDir = '/Users/shawnpivonka/Sites/'
-API  = baseDir + 'api.leadpropeller.dev/'
-LEADPROPELLER = baseDir + 'leadpropeller.dev/'
-PLUGIN = baseDir + 'api.leadpropeller.dev/storage/app/misc/wordpress/lp-admin-theme/'
-
-repos = [API, LEADPROPELLER, PLUGIN]
-repoLabels = {API: 'API LEADPROPELLER', LEADPROPELLER: 'LEADPROPELLER', PLUGIN: 'WORDPRESS PLUGIN'}
-
 #
 #	Commands
 #	
@@ -179,10 +171,41 @@ def commit(message):
 def cd(repo):
 	os.chdir(os.path.dirname(repo))
 
-# def testing():
-	
+def clearCommandFile():
+	open(commandFile,'w').close()
 
+def runBranchRevertCommands():
+	file = open(commandFile, 'r')
+	commands = file.read().strip().split('\n')
+	for command in commands:
+		globals()[command]()
+
+def testing():
+
+	migrationString = 'database/migrations/'
+	# results = noShell('git status -sb')
+	# results = results.split('\n')
+
+	# rollback(migrationString[1])
+
+	# for result in results:
+	# 	if migrationString in result:
+	# 		rollback(result[:2])
+
+
+
+baseDir = '/Users/shawnpivonka/Sites/'
+
+API  = baseDir + 'api.leadpropeller.dev/'
+LEADPROPELLER = baseDir + 'leadpropeller.dev/'
+PLUGIN = baseDir + 'api.leadpropeller.dev/storage/app/misc/wordpress/lp-admin-theme/'
+
+repos = [API, LEADPROPELLER, PLUGIN]
+repoLabels = {API: 'API LEADPROPELLER', LEADPROPELLER: 'LEADPROPELLER', PLUGIN: 'WORDPRESS PLUGIN'}
+
+commandFile = 'commandFile'
 current_branch = currentBranch()
+
 locals()[sys.argv[1]]()
 
 
