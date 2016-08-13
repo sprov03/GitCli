@@ -14,10 +14,11 @@ def gitStatus():
 		# if hasBranch(current_branch) is False:
 		# 	continue
 		cd(repo)
-		shell('echo')
 		print repoLabels[repo]
 		shell('git status -sb')
-		shell('echo')
+		print
+		print
+		print
 
 # Push each active repo to the current branch
 def pushBranches():
@@ -135,6 +136,14 @@ def deleteBranches():
 #	Helper Functions
 #
 
+# ssh into scotchbox and run php artisan migrate in the leadpropeller repo
+def migrate():
+	call(['ssh', 'vagrant@192.168.33.10', 'php /var/www/leadpropeller.dev/artisan migrate']);
+
+# ssh into scotchbox and run php artisan migrate:rollback in the leadpropeller repo
+def rollback():
+	call(['ssh', 'vagrant@192.168.33.10', 'php /var/www/leadpropeller.dev/artisan migrate:rollback']);
+
 # Returns the current working branch of the present repo
 def currentBranch():
 	branches = noShell('git branch').strip().split('\n')
@@ -181,17 +190,8 @@ def runBranchRevertCommands():
 		globals()[command]()
 
 def testing():
-
-	migrationString = 'database/migrations/'
-	# results = noShell('git status -sb')
-	# results = results.split('\n')
-
-	# rollback(migrationString[1])
-
-	# for result in results:
-	# 	if migrationString in result:
-	# 		rollback(result[:2])
-
+	print 'testing was called'
+	call(['ssh', 'vagrant@192.168.33.10', 'php /var/www/leadpropeller.dev/artisan env']);
 
 
 baseDir = '/Users/shawnpivonka/Sites/'
