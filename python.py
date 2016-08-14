@@ -77,6 +77,7 @@ def pullMaster():
 
 # Checks out a branch from each repo that has that branch
 def checkoutBranches():
+	runBranchRevertCommands()
 	shell('git branch')
 	branch = raw_input("What is the name of the branch that you want to checkout: ")
 
@@ -91,6 +92,7 @@ def checkoutBranches():
 # Creates New Branches in each repo that you decide
 def checkoutNewBranches():
 	gitStatus()
+	runBranchRevertCommands()
 	count = 1
 	print "REPOS"
 
@@ -184,17 +186,29 @@ def clearCommandFile():
 	open(commandFile,'w').close()
 
 def runBranchRevertCommands():
+	response = raw_input("Do you want to run the revert commands: ")
+	if response == 'no' or response == 'n':
+		return
+		
 	file = open(commandFile, 'r')
 	commands = file.read().strip().split('\n')
 	for command in commands:
 		globals()[command]()
+	file.close()
+	clearCommandFile()
+
+def addRevertCommand(command):
+	file = open(commandFile, 'a')
+	file.write(command + '\n')
+	file.close()
 
 def testing():
 	print 'testing was called'
-	call(['ssh', 'vagrant@192.168.33.10', 'php /var/www/leadpropeller.dev/artisan env']);
-
+	runBranchRevertCommands()
+	# addRevertCommand('migrate')
 
 baseDir = '/Users/shawnpivonka/Sites/'
+scriptDir = baseDir + 'pytonGitCli.py/'
 
 API  = baseDir + 'api.leadpropeller.dev/'
 LEADPROPELLER = baseDir + 'leadpropeller.dev/'
@@ -203,7 +217,7 @@ PLUGIN = baseDir + 'api.leadpropeller.dev/storage/app/misc/wordpress/lp-admin-th
 repos = [API, LEADPROPELLER, PLUGIN]
 repoLabels = {API: 'API LEADPROPELLER', LEADPROPELLER: 'LEADPROPELLER', PLUGIN: 'WORDPRESS PLUGIN'}
 
-commandFile = 'commandFile'
+commandFile = scriptDir + 'commandFile'
 current_branch = currentBranch()
 
 locals()[sys.argv[1]]()
